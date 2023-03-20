@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -32,27 +33,27 @@ public class UserManagementController {
 	@Autowired
 	UserManagementService UserManagementService;
 
-	@PostMapping(AppConstants.USERS)
+	@PostMapping(path = AppConstants.USERS,consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> createUser(@RequestBody @Valid CreateUserInputDTO dto) {
 		ViewUserDTO addedUser = UserManagementService.createUser(dto);
 		ResponseEntity<Object> response = new ResponseEntity<Object>(addedUser, HttpStatus.CREATED);
 		return response;
 	}
 
-	@GetMapping(AppConstants.USERBYID)
+	@GetMapping(path = AppConstants.USERBYID, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> readUser(@PathVariable("id") Long id) throws UserNotFoundException {
 		ViewUserDTO user = UserManagementService.getUser(id);
 		return new ResponseEntity<Object>(user, HttpStatus.OK);
 	}
 
-	@PutMapping(AppConstants.USERS)
+	@PutMapping(path = AppConstants.USERS,consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> updateUser(@RequestBody @Valid UpdateUserInputDTO dto) throws UserNotFoundException {
 		ViewUserDTO updatedUser = UserManagementService.updateUser(dto);
 		ResponseEntity<Object> response = new ResponseEntity<Object>(updatedUser, HttpStatus.OK);
 		return response;
 	}
 
-	@DeleteMapping(AppConstants.USERS)
+	@DeleteMapping(path = AppConstants.USERS,consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('ROLE_SUPER_ADMIN')")
 	public ResponseEntity<Object> deleteUser(@RequestBody @Valid DeleteUserInputDTO dto) throws UserNotFoundException {
 		UserManagementService.deleteUser(dto);
@@ -60,7 +61,7 @@ public class UserManagementController {
 		return response;
 	}
 
-	@GetMapping(AppConstants.USERS)
+	@GetMapping(path = AppConstants.USERS, produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('ROLE_SUPER_ADMIN') or hasAuthority('ROLE_ADMIN')")
 	public ResponseEntity<Object> listUsers() {
 		ResponseEntity<Object> response;
